@@ -1,0 +1,44 @@
+<!-- Banner de Cookies con Bootstrap -->
+<div id="cookie-banner" class="position-fixed w-100 bg-dark text-white p-3 d-flex justify-content-between align-items-center shadow-lg d-none" style="bottom: 0; left: 0; z-index: 1050;">
+    <p class="mb-0 flex-grow-1">
+        Usamos cookies para mejorar tu experiencia en nuestra web. Algunas son necesarias para el funcionamiento del sitio, 
+        mientras que otras nos ayudan a mejorar la navegación. Puedes aceptarlas todas o personalizar tu selección.
+    </p>
+    <div class="d-flex gap-2">
+        <button id="accept-all-cookies" class="btn btn-success">Aceptar</button>
+        <button id="configure-cookies" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#cookie-settings-modal">Configurar</button>
+    </div>
+</div>
+
+<!-- Modal de Configuración de Cookies con Bootstrap -->
+<div id="cookie-settings-modal" class="modal fade" tabindex="-1" aria-labelledby="cookie-settings-title" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="cookie-settings-title">Configuración de Cookies</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p>Selecciona las cookies que deseas aceptar:</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="necessary-cookies" disabled checked>
+                    <label class="form-check-label" for="necessary-cookies">Cookies necesarias (Obligatorias)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="analytics-cookies">
+                    <label class="form-check-label" for="analytics-cookies">Cookies de análisis (Google Analytics, etc.)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="marketing-cookies">
+                    <label class="form-check-label" for="marketing-cookies">Cookies de marketing (Publicidad personalizada)</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save-cookie-settings" class="btn btn-primary">Guardar preferencias</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/cookies.js') }}"></script>

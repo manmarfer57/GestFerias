@@ -1,0 +1,40 @@
+<div id="lista" >
+    <h4 class="mt-1">Solicitudes de Parcelas</h4>
+    {% if solicitudes_agrupadas %}
+        <table class="table table-bordered table-hover text-center align-middle rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>Fiesta</th>
+                    <th>Parcela</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fiesta, solicitudes in solicitudes_agrupadas.items() %}
+                    {% for solicitud in solicitudes %}
+                        <tr>
+                            <td><a href="{{ url_for('fiesta.fiesta_view', fiesta_id=fiesta.id) }}">{{ fiesta.nombre }}</a></td>
+                            <td><a href="{{ url_for('parcela.parcela_view', parcela_id=solicitud.idParcela, idFiesta=solicitud.idFiesta) }}">{{ solicitud.parcela.nombre }}</a></td>
+                            <td>
+                                <span class="badge 
+                                    {% if solicitud.estado == 'aceptada' %}bg-success
+                                    {% elif solicitud.estado == 'rechazada' %}bg-danger
+                                    {% else %}bg-warning{% endif %}">
+                                    {{ solicitud.estado | upper }}
+                                </span>
+                            </td>
+                            <td>
+                                <form action="{{ url_for('perfil.solicitud_delete', solicitud_id=solicitud.id) }}" method="POST" class="m-0">
+                                    <button type="submit" class="btn btn-danger btn-sm">Revocar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No has realizado ninguna solicitud.</p>
+    {% endif %}
+</div>

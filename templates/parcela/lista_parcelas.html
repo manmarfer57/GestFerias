@@ -1,0 +1,11 @@
+<ul id="listaParcelas" >
+    {% for parcela in parcelas %}
+        <li class="parcela-item"
+            data-lat="{{ parcela.localizacion[0][0][1] if parcela.localizacion else '' }}"
+            data-lng="{{ parcela.localizacion[0][0][0] if parcela.localizacion else '' }}">
+            
+            <input type="checkbox" class="parcela-checkbox" data-id="{{ parcela.id }}">
+            <a href="{{ url_for('parcela_view', parcela_id=parcela.id) }}">{{ parcela.nombre }} - {{ parcela.tipo }}</a>
+        </li>
+    {% endfor %}
+</ul>

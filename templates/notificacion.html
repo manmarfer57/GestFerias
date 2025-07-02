@@ -1,0 +1,30 @@
+<div id="lista" >
+    <h6 class="card bg-dark-alt text-white card-body">Actualizaciones en Tus Solicitudes:</h6>
+    {% if solicitudes_ordenadas %}
+        <table class="table table-bordered table-hover text-center align-middle rounded">
+            <thead class="table-dark ">
+                <tr>
+                    <th>Parcelas</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for solicitud in solicitudes_ordenadas %}
+                    <tr>
+                        <td><a href="{{ url_for('parcela.parcela_view', parcela_id=solicitud.idParcela, idFiesta=solicitud.idFiesta) }}">{{ solicitud.parcela.nombre }}</a></td>
+                        <td>
+                            <span class="badge 
+                                {% if solicitud.estado == 'aceptada' %}bg-success
+                                {% elif solicitud.estado == 'rechazada' %}bg-danger
+                                {% else %}bg-warning{% endif %}">
+                                {{ solicitud.estado | upper }}
+                            </span>
+                        </td>  
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No has realizado ninguna solicitud.</p>
+    {% endif %}
+</div>

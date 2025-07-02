@@ -1,0 +1,48 @@
+{% extends "base/base_template.html" %}
+
+{% block title %}{{ parcela.tipo }}{% endblock %}
+
+{% block content %}
+<div class="container mt-1">
+    <div class="row">
+        {% if not current_user.rol in ['ayuntamiento', 'admin'] %}
+            <div class="col-12">
+        {% else %}
+            <div class="col-md-6">
+        {% endif %}
+            <div class="card bg-dark-alt text-white card-body">
+                <h3>{{ parcela.tipo }}</h3>
+                <p>{{ parcela.detalles }}</p>
+                {% if fiesta %}
+                <p><a href="{{ url_for('fiesta.fiesta_view', fiesta_id=fiesta.id) }}" class="fw-bold">{{ fiesta.nombre }}
+                ({{ fiesta.fechaInicio.strftime('%d %b') }} - {{ fiesta.fechaFin.strftime('%d %b %Y') }})</a> : {{ fiesta.descripcion }}</p>
+                {% endif %}
+            </div>
+            {% if current_user.is_authenticated and (parcela.idAyun == current_user.id or current_user.es_admin()) %}
+                <form action="{{ url_for('parcela.parcela_delete', parcela_id=parcela.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger mt-1">Eliminar Parcela</button>
+                </form>
+            {% endif %}
+            {% if current_user.rol == 'feriante' %}
+                 {% include 'parcela/solicitar_parcela.html' %}
+            {% endif %}
+            <div class="card shadow-sm mt-1">
+                <div class="card-body p-2"><div id="map" class="rounded"></div></div>
+            </div>  
+        </div>
+        {% if current_user.rol in ['ayuntamiento', 'admin'] and parcela.fiestas %}
+        <div class="col-md-6"> 
+                {% include 'parcela/fiestas_parcela.html' %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div id="coordenadas-data" coordenadas-data="{{ coordenadas | tojson | safe }}"></div>
+
+{% block scripts %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script type="module" src="{{ url_for('static', filename='js/map_scriptpv.js') }}"></script>
+{% endblock %}
+{% endblock %}

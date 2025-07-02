@@ -1,0 +1,54 @@
+
+<div id="listar" class="mb-2">
+    <h6>Solicitudes de feriantes a las parcelas de esta fiesta:</h6>
+    {% if solicitudes %}
+    <table class="table table-bordered table-striped table-hover text-center align-middle rounded">
+        <thead class="table-dark">
+            <tr>
+                <th>Tramitación</th>
+                <th>Parcela</th>
+                <th>Feriante</th>
+                <th>Estado</th>
+                
+                <th colspan="2">Cambiar Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for solicitud in solicitudes %}
+                <tr>
+                    <td>{{ solicitud.fecha.strftime('%d/%m/%Y') }}</td>
+                    <td><a href="{{ url_for('parcela.parcela_view', parcela_id=solicitud.idParcela, idFiesta=solicitud.idFiesta) }}">{{ solicitud.parcela.nombre }}</a></td>
+                    <td><a href="{{ url_for('perfil.perfil', perfil_id=solicitud.idFeriante) }}">{{ solicitud.feriante.nombre }}</a></td>
+                    <td>
+                        <span class="badge 
+                            {% if solicitud.estado == 'aceptada' %}bg-success
+                            {% elif solicitud.estado == 'rechazada' %}bg-danger
+                            {% else %}bg-warning{% endif %}">
+                            {{ solicitud.estado | upper }}
+                        </span>
+                    </td>
+                    {% if not solicitud.estado == 'aceptada' %}
+                        <td>
+                            <form action="{{ url_for('fiesta.solicitud_estado', solicitud_id=solicitud.id, estado='aceptada') }}" method="POST">
+                                <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
+                            </form>
+                        </td>
+                    {% endif %} 
+                    {% if not solicitud.estado == 'pendiente' %}
+                        <td></td>
+                    {% endif %}
+                    {% if not solicitud.estado == 'rechazada' %}
+                        <td> 
+                            <form action="{{ url_for('fiesta.solicitud_estado', solicitud_id=solicitud.id, estado='rechazada') }}" method="POST">
+                                <button type="submit" class="btn btn-danger btn-sm">Rechazar</button>
+                            </form>
+                        </td>
+                    {% endif %}  
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No hay solicitudes registradas para esta fiesta.</p>
+    {% endif %}
+</div>

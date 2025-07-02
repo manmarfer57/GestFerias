@@ -1,0 +1,41 @@
+{% extends "base/base_template.html" %}
+
+{% block title %}{{ "Editar Publicidad" if publicidad else "Nueva Publicidad" }}{% endblock %}
+
+{% block content %}
+{% if current_user.rol == "publicitado" or current_user.rol == "admin"  %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <input type="hidden" name="imagen_actual" value="{{ publicidad.foto }}">
+        
+        <div class="row d-flex align-items-center h-100">
+            <div class="col-md-3">
+                <h3 class="mb-0">{{ "Editar Publicidad" if publicidad else "Crear Nueva Publicidad" }}</h3>
+            </div>            
+            <div class="col-md-3 d-flex justify-content-start mb-1 mt-1">
+                <button type="submit" class="btn btn-primary ">{{ "Editar Publicidad" if publicidad else "Crear Publicidad" }}</button>
+            </div>
+        </div>
+        <div class="card bg-dark-alt shadow-sm p-4 mt-1">
+            <fieldset class="mt-1">
+                {% if current_user.rol == 'publicitado' %}
+                    {% with field=form.foto %}
+                        {% include 'form_field.html' %}
+                    {% endwith %}
+                    {% if publicidad and publicidad.foto %}
+                        <p class="text-light mb-1 mt-1">Imagen actual: {{ publicidad.foto }}</p>
+                    
+                        <div class="col-md-6 justify-content-center mb-1 mt-1">
+                            <img src="{{ url_for('static', filename='publicidades/' + publicidad.foto) }}" alt="Publicidad" class="publicidad-image-pub">
+                        </div>
+                    {% endif %}
+                {% elif current_user.rol == 'admin' %}
+                    {% with field=form.fecha %}
+                        {% include 'form_field.html' %}
+                    {% endwith %}
+                {% endif %}
+            </fieldset>
+        </div>
+    </form>
+{% endif %}
+{% endblock %}

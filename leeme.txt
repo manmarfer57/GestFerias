@@ -1,0 +1,63 @@
+/GestFeriasSI
+├── routes/
+│   Módulo que agrupa todas las rutas (blueprints) de la aplicación Flask.
+│
+├── static/
+│   Archivos estáticos.
+│   ├── css/
+│   │   Hojas de estilo personalizadas.
+│   ├── js/
+│   │   Scripts de JavaScript personalizados.
+│   ├── publicaciones/
+│   │   Carpeta donde se almacenan las imágenes subidas para anuncios de empresas.
+│   └── logo.jpeg
+│       Imagen del logotipo.
+│
+├── templates/
+│   Plantillas HTML Jinja2 utilizadas para renderizar las vistas.
+│   ├── base/
+│   │   Plantillas base.
+│   ├── fiesta/
+│   │   Vistas relacionadas con la gestión de fiestas.
+│   ├── parcela/
+│   │   Vistas relacionadas con la gestión de parcelas.
+│   ├── perfil/
+│   │   Vistas relacionadas con la gestión de perfiles de usuario.
+│   ├── publicidad/
+│   │   Vistas relacionadas con la gestión de anuncios publicitarios.
+│   ├── filtro_provincias.html
+│   │   Filtro de búsqueda de fiestas por provincias.
+│   ├── form_field.html
+│   │   Fragmento reutilizable para campos de formularios.
+│   ├── index.html
+│   │   Página principal.
+│   ├── login_form.html
+│   │   Formulario de inicio de sesión.
+│   ├── notificacion.html
+│   │   Página de notificaciones.
+│   ├── publicidad_gallery.html
+│   │   Galería de anuncios publicitarios.
+│   └── signup_form.html
+│       Formulario de registro de nuevos usuarios.
+│
+├── utils/
+│   Funciones auxiliares y utilidades.
+│
+├── config.py
+│   Configuración general y variables del entorno.
+│
+├── create_app.py
+│   Fichero de inicialización y configuración de la aplicación Flask.
+│
+├── extensions.py
+│   Archivo donde se inicializan las extensiones utilizadas.
+│
+├── forms.py
+│   Definición de los formularios del sistema utilizando Flask-WTF.
+│
+├── models.py
+│   Definición de las clases (modelos) que representan las tablas de la base de datos.
+│
+└── run.py
+    Archivo principal que permite lanzar la aplicación Flask en entorno local.
+

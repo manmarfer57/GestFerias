@@ -1,0 +1,27 @@
+{% if current_user.es_admin() %}
+    <div id="listar" >
+{% else %}
+    <div id="listaParcelas" >
+{% endif %}
+    {% if parcelas %}
+        <table class="table table-bordered table-hover table-striped text-center align-middle rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>Parcelas añadidas a esta fiesta</th>
+                    <th>Tipo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for parcela in parcelas %}
+                    <tr data-lat="{{ parcela.localizacion[0][0][1] if parcela.localizacion else '' }}" 
+                        data-lng="{{ parcela.localizacion[0][0][0] if parcela.localizacion else '' }}">
+                        <td><a href="{{ url_for('parcela.parcela_view', parcela_id=parcela.id, idFiesta=fiesta.id) }}" >{{ parcela.nombre }}</a></td>
+                        <td>{{ parcela.tipo }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="mt-1 text-center">No hay parcelas disponibles.</p>
+    {% endif %}
+</div>

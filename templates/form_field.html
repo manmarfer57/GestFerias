@@ -1,0 +1,24 @@
+<div class="form-group d-flex align-items-center gap-2 mt-1 ">
+    <label class="col-sm-4 fw-bold">
+        {{ field.label }}
+
+        {% if field.description %}
+            <span 
+                tabindex="0" 
+                class="text-white" 
+                data-bs-toggle="tooltip" 
+                data-bs-placement="right" 
+                title="{{ field.description }}"
+                style="cursor: pointer;"
+            >
+                <i class="bi bi-question-circle"></i>
+            </span>
+        {% endif %}
+    </label>
+
+    {{ field(class="form-control flex-grow-1") }}
+
+    {% if field.errors %}
+        <span class="text-danger ms-2">{{ field.errors[0] }}</span>
+    {% endif %}
+</div>

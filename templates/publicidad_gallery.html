@@ -1,0 +1,13 @@
+{% if publicidades_T %}
+    <div class="publicidad-gallery d-flex align-items-center">
+        {% for publicidad in publicidades_T %}
+            <div class="publicidad-item">
+                <a href="{{ url_for('publicidad.publicidad_view', publicidad_id=publicidad.id) }}">
+                    <img src="{{ url_for('static', filename='publicidades/' + publicidad.foto) }}" alt="Publicidad" class="publicidad-image-pub img-fluid rounded shadow">
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="text-center text-muted">No hay publicidades disponibles.</p>
+{% endif %}

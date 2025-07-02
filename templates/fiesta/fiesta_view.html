@@ -1,0 +1,121 @@
+{% extends "base/base_template.html" %}
+
+{% block title %}{{ fiesta.nombre }} - {{ ayun.municipio }}{% endblock %}
+
+{% block content %}
+<div class="container mt-1">
+    <div class="row mt-1">
+        <div class="col-md-6">
+            <div class="card bg-dark-alt text-white card-body">
+                <h5>{{ fiesta.nombre }}, <a href="{{ url_for('perfil.perfil', perfil_id=ayun.usuario_id) }}">{{ ayun.municipio }}</a>  
+                    <span class="small">({{ fiesta.fechaInicio.strftime('%d %b') }} - {{ fiesta.fechaFin.strftime('%d %b %Y') }})</span>
+                </h5>
+                {{ fiesta.descripcion }}
+            </div>
+        </div>
+        <div class="col-md-6 d-flex justify-content-end">
+            {% if current_user.is_authenticated and (ayun.usuario_id == current_user.id or current_user.es_admin()) %}
+                {% include 'fiesta/fiesta_buttons.html' %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="row mt-1">
+        {% if not current_user.is_authenticated or current_user.publicitado %}
+            <div class="col-12">
+        {% else %}
+            <div class="col-md-6">
+        {% endif %}
+            <div class="card shadow-sm mt-2">
+                <div class="card-body p-2">
+                    <div id="map" class="rounded"></div>
+                </div>
+            </div>    
+            <div id="map-data" 
+                data-latitud="{{ ayun.latitud }}" 
+                data-longitud="{{ ayun.longitud }}"
+                data-parcelas='{{ parcelas | tojson | safe }}'
+                data-parcelas-todas='{{ parcelas_t | tojson | safe }}'
+                data-id-fiesta="{{ fiesta.id }}">
+            </div>
+        </div>
+        {% if current_user.is_authenticated %}
+            <div class="col-md-6">
+                {% if current_user.rol == 'ayuntamiento' %}
+                    {% include 'fiesta/solicitudes_parcelas.html' %}
+                {% endif %}
+
+                <div class="mt-1">
+                {% if current_user.rol in ['ayuntamiento', 'feriante', 'admin'] and parcelas %}
+                    {% include 'fiesta/lista_parcelas.html' %}
+                {% endif %}
+                </div>
+
+                <div id="listaParcelas" class="mt-3" >
+                    {% if current_user.rol == 'feriante' %}
+                        {% if parcelas_solicitadas %}
+                            <ul class="list-group ms-5 me-5">
+                                <h6>Estado de las solicitudes a las parcelas de esta fiesta:</h6>
+                                {% for solicitud in parcelas_solicitadas %}
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <span class="ms-5 me-5"><a href="{{ url_for('parcela.parcela_view', parcela_id=solicitud.parcela.id) }}">{{ solicitud.parcela.nombre }}</a></span>
+                                        <span class="badge ms-5
+                                            {% if solicitud.estado == 'aceptada' %}bg-success
+                                            {% elif solicitud.estado == 'rechazada' %}bg-danger
+                                            {% else %}bg-warning{% endif %}">
+                                            {{ solicitud.estado | upper }}
+                                        </span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-center mt-1">No tienes solicitudes de parcelas.</p>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                {% if current_user.is_authenticated and (ayun.usuario_id == current_user.id or current_user.es_admin()) %}
+                    <div id="parcelasModal" style="display: none;">
+                        <input type="text" id="buscarParcela" placeholder="Buscar parcela por nombre..." class="form-control mb-1">
+                        <div><input type="checkbox" id="seleccionarTodas"> Seleccionar todas</div>
+                        <ul id="listaParcelas" class="list-group fc-scroller fc-scroller-liquid-absolute">
+                            {% for parcela in parcelas_t %}
+                                <li class="parcela-item"
+                                    data-lat="{{ parcela.localizacion[0][0][1] if parcela.localizacion else '' }}"
+                                    data-lng="{{ parcela.localizacion[0][0][0] if parcela.localizacion else '' }}">
+                                    <input type="checkbox" class="parcela-checkbox" data-id="{{ parcela.id }}">
+                                    {{ parcela.nombre }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <button id="añadirParcelasSeleccionadas" class="btn btn-danger mt-1">Añadir Parcelas</button>
+                        <button id="cancelarAñadir" class="btn btn-secondary mt-1">Cancelar</button>
+                    </div>
+
+                    <div id="parcelasModalRemover" style="display: none;">
+                        <input type="text" id="buscarParcelaRemover" placeholder="Buscar parcela por nombre..." class="form-control mb-1">
+                        <div><input type="checkbox" id="seleccionarTodasRemover"> Seleccionar todas</div>
+                        <ul id="listaParcelasRemover">
+                            {% for parcela in parcelas %}
+                                <li class="parcela-item"
+                                    data-lat="{{ parcela.localizacion[0][0][1] if parcela.localizacion else '' }}"
+                                    data-lng="{{ parcela.localizacion[0][0][0] if parcela.localizacion else '' }}">
+                                    <input type="checkbox" class="parcela-checkbox" data-id="{{ parcela.id }}">
+                                    {{ parcela.nombre }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <button id="quitarParcelasSeleccionadas" class="btn btn-danger mt-1">Quitar Parcelas</button>
+                        <button id="cancelarQuitar" class="btn btn-secondary mt-1">Cancelar</button>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% block scripts %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script type="module" src="{{ url_for('static', filename='js/map_scriptfv.js') }}"></script>
+{% endblock %}
+{% endblock %}

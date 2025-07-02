@@ -1,0 +1,58 @@
+{% extends "base/base_template.html" %}
+
+{% block title %}Formulario de Parcela{% endblock %}
+
+{% block content %}
+{% if current_user.rol == "ayuntamiento" %}
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="row d-flex align-items-center h-100">
+            <div class="col-md-3">
+                <h3 class="mb-0">{{ "Editar Parcela" if parcela else "Crear Nueva Parcela" }}</h3>
+            </div>            
+            <div class="col-md-3 d-flex justify-content-start mt-1">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </div>
+        <div class="card bg-dark-alt shadow-sm p-2 mt-2">
+            <fieldset>
+                <div class="row ms-4 me-4 mt-3">
+                    <div class="col-md-6 mt-2 me-5">
+                        {% with field=form.nombre %}
+                        {% include 'form_field.html' %}
+                    {% endwith %}
+                    {% with field=form.tipo %}
+                        {% include 'form_field.html' %}
+                    {% endwith %}
+                    </div>
+                    <div class="col-md-5 mt-2 ms-4">
+                        {% with field=form.detalles %}
+                            {% include 'form_field.html' %}
+                        {% endwith %}
+                    </div>                    
+                </div>
+            </fieldset>
+
+            <input type="hidden" id="coordenadas" name="localizacion" value="{{ parcela.localizacion if parcela else '' }}">
+            <div id="map-data"
+                data-latitud="{{ current_user.ayuntamiento.latitud }}" 
+                data-longitud="{{ current_user.ayuntamiento.longitud }}">
+            </div>
+
+            <div class="card shadow-sm mt-1">
+                    <div class="card-body p-2"><div id="map" class="rounded"></div></div>
+            </div> 
+        </div>     
+    </form>
+{% endif %}
+
+{% block scripts %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+<script type="application/json" id="parcelas-data">{{ parcelas | tojson | safe }}</script>
+<script type="module" src="{{ url_for('static', filename='js/map_scriptpf.js') }}"></script>
+{% endblock %}
+{% endblock %}
+

@@ -1,0 +1,22 @@
+<div class="card shadow-sm bg-custom mt-2">
+    <div class="card-header bg-primary text-white">
+        <h5 class="fw-bold mb-0 text-light">Filtrar provincias en el calendario</h5>
+    </div>
+    <div class="card-body">
+        <form id="filtroProvinciasForm" method="GET" action="{{ url_for('main.index') }}">
+            <div id="listar" >
+                <div id="provincia-lista" class="d-flex flex-column gap-2">
+                    {% for provincia in provincias_disponibles %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="provincias" value="{{ provincia }}"
+                                id="provincia_{{ loop.index }}" {% if provincia in provincias_seleccionadas %}checked{% endif %}>
+                            <label class="form-check-label" for="provincia_{{ loop.index }}">{{ provincia }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mt-2">Filtrar</button>
+            <button type="button" id="limpiarFiltroBtn" class="btn btn-danger w-100 mt-2">Eliminar filtro</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+<div class="d-flex justify-content-center gap-3 mt-1">
+    <a href="{{ url_for('publicidad.publicidad_form', publicidad_id=publicidad.id) }}" class="btn btn-primary text-light">Editar Publicidad</a>
+
+    <form action="{{ url_for('publicidad.publicidad_delete', publicidad_id=publicidad.id) }}" method="post"
+        onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta publicidad?');">
+        <button type="submit" class="btn btn-danger">Eliminar Publicidad</button>
+    </form>
+
+    {% if current_user.rol == 'admin' %}
+    <form action="{{ url_for('publicidad.aprobar_publicidad', publicidad_id=publicidad.id) }}" method="POST">
+        <button type="submit" class="btn btn-success">Aprobar y Extender Publicidad</button>
+    </form>
+    {% endif %}
+</div>
+

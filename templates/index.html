@@ -1,0 +1,74 @@
+{% extends "base/base_template.html" %}
+
+{% block title %}GestFerias{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-1">
+        <div class="col-lg-2 d-none d-lg-flex flex-column align-items-center">
+            {% if current_user.rol == 'feriante' %}
+                {% include "notificacion.html" %}
+            {% else %}
+                {% include "publicidad_gallery.html" %}
+            {% endif %}
+        </div>
+
+        <div class="col-lg-8 col-md-12 d-flex flex-column align-items-center">
+            {% if current_user.rol == 'ayuntamiento' %}
+            <h5>Tu Calendario de fiestas añadidas:</h5>
+            {% endif %}
+            <div id="calendar" class="my-4 w-100"></div>
+        </div>
+
+        <div class="col-lg-2 d-flex flex-column align-items-center">
+            {% if current_user.rol == 'ayuntamiento' %}
+                <div class="mt-1">
+                    <a href="{{ url_for('fiesta.fiesta_form') }}" class="btn btn-success text-light w-100">Añadir Fiesta</a>
+                </div>
+            {% endif %}
+
+            {% if current_user.rol == 'publicitado' %}
+                <div class="mt-1">
+                    <a href="{{ url_for('publicidad.publicidad_form') }}" class="btn btn-success text-light w-100">Añadir Publicidad</a>
+                </div>
+            {% endif %}
+
+            {% include "filtro_provincias.html" %}
+        </div>
+    </div>
+
+    <div class="row mt-1">
+        <div class="col-12 filtro-publicidades text-center">
+            <form id="filtroForm">
+                <h5 for="filtro_descripcion" class="form-label">Buscar por palabras clave:</h5>
+                <input type="text" id="filtro_descripcion" name="filtro_descripcion" class="form-control w-50 mx-auto" value="{{ request.args.get('filtro_descripcion', '') }}">
+                <button type="submit" class="btn btn-primary mt-2 mb-3">Filtrar Publicidades</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="publicidades-container">
+        <div class="row mt-1">
+            {% if publicidades %}
+                {% for publicidad in publicidades %}
+                    <div class="col-6 col-md-3 d-flex justify-content-center">
+                        <a href="{{ url_for('publicidad.publicidad_view', publicidad_id=publicidad.id) }}">
+                            <img src="{{ url_for('static', filename='publicidades/' + publicidad.foto) }}" alt="Publicidad" class="publicidad-image">
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="mt-1 text-center">No hay publicidades activas disponibles.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+<script type="application/json" id="eventos-fiestas-data">{{ eventos_fiestas | default([]) | tojson | safe }}</script>
+<script src="{{ url_for('static', filename='js/calendar_script.js') }}"></script>
+<script type="application/json" id="provincias-data">{{ provincias_disponibles | default([]) | tojson | safe }}</script>
+<script src="{{ url_for('static', filename='js/filtro_provincias.js') }}"></script>
+<script src="{{ url_for('static', filename='js/filtro_publicidades.js') }}"></script>
+{% endblock %}
+{% endblock %}

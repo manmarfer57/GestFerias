@@ -1,0 +1,45 @@
+{% extends "base/base_template.html" %}
+
+{% block title %}{{ "Editar Fiesta: " + fiesta.nombre if fiesta else "Nueva Fiesta" }}{% endblock %}
+
+{% block content %}
+{% if current_user.rol in ["ayuntamiento", "admin"] %}
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+
+        <div class="row d-flex align-items-center mt-4 h-100">
+            <div class="col-md-3">
+                <h3 class="mb-0">{{ "Editar Fiesta" if fiesta else "Crear Nueva Fiesta" }}</h3>
+            </div>            
+            <div class="col-md-3 d-flex justify-content-start">
+                <button type="submit" class="btn btn-primary mb-1 mt-1">
+                    {{ "Editar Fiesta" if fiesta else "Crear Fiesta" }}
+                </button>
+            </div>
+        </div>
+        <div class="card bg-dark-alt shadow-sm p-4 mt-4">
+            <fieldset>
+                <h4>Detalles de la Fiesta</h4>
+                <div class="row mt-3">
+                    <div class="col-md-6 mt-2 me-5">
+                        {% with field=form.nombre %}
+                        {% include 'form_field.html' %}
+                    {% endwith %}
+                    {% with field=form.fechaInicio %}
+                        {% include 'form_field.html' %}
+                    {% endwith %}
+                    {% with field=form.fechaFin %}
+                        {% include 'form_field.html' %}
+                    {% endwith %}
+                    </div>
+                    <div class="col-md-5 mt-2 ms-4">
+                        {% with field=form.descripcion %}
+                            {% include 'form_field.html' %}
+                        {% endwith %}
+                    </div>                    
+                </div>
+            </fieldset>
+        </div>
+    </form>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,15 @@
+<div class="d-flex gap-3 align-items-center">
+    <form action="{{ url_for('fiesta.fiesta_delete', fiesta_id=fiesta.id) }}" method="post"
+        onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta fiesta?');">
+        <button type="submit" class="btn btn-danger">Eliminar Fiesta</button>
+    </form>
+
+    <a href="{{ url_for('fiesta.fiesta_form', fiesta_id=fiesta.id) }}" class="btn btn-primary text-light">Editar Fiesta</a>
+
+    {% if current_user.rol == "ayuntamiento" %}
+        <a href="{{ url_for('parcela.parcela_form', idAyun=ayun.usuario_id, fiesta_id=fiesta.id) }}" class="btn btn-success text-light">Añadir Parcela Nueva</a>
+    {% endif %}
+
+    <button id="parcelalist" class="btn btn-warning text-light">Añadir Parcela Existente</button>
+    <button id="parcelasRemover" class="btn btn-secondary">Quitar Parcelas</button>
+</div>

@@ -1,0 +1,38 @@
+<h4 class="mt-2">Administración de Publicidades</h4>
+<form method="GET" class="mb-1">
+    <div class="input-group">
+        <input type="text" id="filtro_nombre_publicitado" name="filtro_nombre_publicitado" 
+            class="form-control" placeholder="Nombre del publicitado" value="{{ request.args.get('filtro_nombre_publicitado', '') }}">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </div>
+</form>
+<div id="listar" >
+    {% if publicidades_T %}
+        <table class="table table-bordered table-hover table-striped text-center align-middle rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>Publicitado</th>
+                    <th>Imagen</th>
+                    <th>Fecha</th>
+                    <th>Código</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for publicidad, nombre_publicitado in publicidades_T %}
+                    <tr>
+                        <td><a href="{{ url_for('perfil.perfil', perfil_id=nombre_publicitado.usuario_id) }}">{{ nombre_publicitado.nombre }}</a></td>
+                        <td>
+                            <a href="{{ url_for('publicidad.publicidad_view', publicidad_id=publicidad.id) }}">
+                                <img src="{{ url_for('static', filename='publicidades/' + publicidad.foto) }}" alt="Publicidad" class="publicidad-image-admin">
+                            </a>
+                        </td>
+                        <td style="{% if publicidad.fecha <= today %}color: red;{% endif %}">{{ publicidad.fecha }}</td>
+                        <td>{{ publicidad.codigo }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="mt-1 text-center">No hay publicidades disponibles.</p>
+    {% endif %}
+</div>

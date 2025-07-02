@@ -1,0 +1,24 @@
+<h4 class="mt-2">Administración de Usuarios</h4>
+<form method="GET" class="mb-1">
+    <div class="input-group">
+        <input type="text" id="filtro_nombre" name="filtro_nombre" 
+            class="form-control" placeholder="Ingrese email o nombre" value="{{ request.args.get('filtro_nombre', '') }}">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </div>
+</form>
+<div id="listar" >
+    {% if usuarios %}
+        <table class="table table-bordered table-hover table-striped text-center align-middle rounded">
+            <thead class="table-dark">
+                <tr><th>Email</th></tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                    <tr><td><a href="{{ url_for('perfil.perfil', perfil_id=usuario.id) }}">{{ usuario.email }}</a></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="mt-1 text-center">No hay usuarios disponibles.</p>
+    {% endif %}
+</div>

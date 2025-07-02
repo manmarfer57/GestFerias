@@ -1,0 +1,20 @@
+<div class="paypal-info mt-1 text-center">
+    <div class="card bg-dark-alt text-white card-body">
+        <p class="font-weight-bold">
+            Publicidad activa hasta: {{ publicidad.fecha.strftime('%d %b %Y') }}<br>
+            <strong>PARA EXTENDER EL PERIODO DE PUBLICITACIÓN</strong><br> 
+            Realice un pago de <strong>15 EUROS/MES</strong> con el siguiente mensaje:
+        </p>
+        <ul class="text-muted text-start mx-auto" style="max-width: 400px;">
+            <li>Nombre del Publicitado</li>
+            <li>Correo Electrónico Vinculado</li>
+            <li>Código de la Publicidad: <strong>{{ publicidad.codigo }}</strong></li>
+        </ul>
+        <strong>EN EL PAYPAL:</strong>
+        <img src="{{ url_for('static', filename='publicidades/pago.jpg') }}" class="pago-image rounded shadow">
+        <p class="mt-1">
+            Tras aprobar el pago, activaremos su publicidad por el periodo correspondiente.<br>
+            Para cualquier consulta: <strong>gestferias.contact@gmail.com</strong>
+        </p>
+    </div>
+</div>

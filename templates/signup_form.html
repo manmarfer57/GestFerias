@@ -1,0 +1,140 @@
+{% extends "base/base_template.html" %}
+
+{% block title %}{{ "Editar usuario:" if perfil else "Registro de usuario:" }}{% endblock %}
+
+{% block content %}
+    {% if error %}
+        <p class="error-message"><strong>Error:</strong> {{ error }}</p>
+    {% endif %}
+
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+    
+        <div class="row d-flex align-items-center h-100">
+            <div class="col-md-3">
+                <h3 class="mb-0">Información General</h3>
+            </div>            
+            <div class="col-md-3 d-flex justify-content-start">
+                <button type="submit" class="btn btn-primary mb-1 mt-1">{{ "Editar Perfil" if perfil else "Crear Perfil" }}</button>            
+            </div>
+        </div>
+    
+        <div class="card bg-dark-alt shadow-sm p-4 mt-1">
+            <fieldset>
+                <div class="row">
+                    <div class="col-md-6 mt-2 me-5">
+                        {% if perfil %}
+                            <div class="form-group row mt-1">
+                                <label class="col-sm-4 col-form-label fw-bold">{{ form.rol.label }}</label>
+                                <div class="col-sm-8">
+                                    {{ form.rol(disabled=True, class="form-control") }} 
+                                </div>
+                            </div>
+                            <input type="hidden" name="rol" value="{{ perfil.rol }}">
+                        {% else %}
+                            {% with field=form.rol %}
+                                {% include 'form_field.html' %}
+                            {% endwith %}
+                        {% endif %}
+                    </div>
+                    <div class="col-md-5 mt-2">
+                        {% with field=form.email %}
+                            {% include 'form_field.html' %}
+                        {% endwith %}
+                    </div>
+                </div>
+    
+                <div class="row">
+                    <div class="col-md-6 mt-1 me-5">
+                        {% with field=form.nombre %}
+                            {% include 'form_field.html' %}
+                        {% endwith %}
+                    </div>
+                    <div class="col-md-5 mt-1">
+                        {% with field=form.password %}
+                            {% include 'form_field.html' %}
+                        {% endwith %}
+                    </div>
+                </div>
+            </fieldset>
+    
+            <fieldset id="ayuntamiento-fields" style="display: none;">
+                <div class="row">
+                    <div class="col-md-6 mt-2 me-5">
+                        {% with field=form.comunidad_autonoma %}
+                            {% include 'form_field.html' %}
+                        {% endwith %}
+                    </div>
+                    <div class="col-md-5 mt-2">
+                        <div class="form-group row">
+                            <label for="latitud" class="col-sm-4 col-form-label fw-bold">
+                                Latitud
+                                <span tabindex="0" class="text-white" data-bs-toggle="tooltip" title="Coordenada geográfica en formato decimal (se asigna automáticamente)." style="cursor: pointer;">
+                                    <i class="bi bi-question-circle"></i>
+                                </span>
+                            </label>
+                            <div class="col-sm-8">
+                                <input type="number" step="any" name="latitud" id="latitud" class="form-control" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="row">
+                    <div class="col-md-6 mt-2 me-5">
+                        <div class="form-group row">
+                            <label for="provincia" class="col-sm-4 col-form-label fw-bold">
+                                Provincia
+                                <span tabindex="0" class="text-white" data-bs-toggle="tooltip" title="Selecciona la provincia correspondiente." style="cursor: pointer;">
+                                    <i class="bi bi-question-circle"></i>
+                                </span>
+                            </label>
+                            <div class="col-sm-8">
+                                <select id="provincia" name="provincia" class="form-control" data-selected="{{ form.provincia.data }}"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5 mt-2">
+                        <div class="form-group row">
+                            <label for="longitud" class="col-sm-4 col-form-label fw-bold">
+                                Longitud
+                                <span tabindex="0" class="text-white" data-bs-toggle="tooltip" title="Coordenada geográfica en formato decimal (se asigna automáticamente)." style="cursor: pointer;">
+                                    <i class="bi bi-question-circle"></i>
+                                </span>
+                            </label>
+                            <div class="col-sm-8">
+                                <input type="number" step="any" name="longitud" id="longitud" class="form-control" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+    
+            <fieldset>
+                <div class="row">
+                    <div class="col-md-6 mt-2 me-5">
+                        {% with field=form.tlf %}
+                            {% include 'form_field.html' %}
+                        {% endwith %}
+                        <fieldset id="feriante-fields" class="mt-1" style="display: none;">
+                            {% with field=form.tipo %}
+                                {% include 'form_field.html' %}
+                            {% endwith %}
+                        </fieldset>
+                    </div>
+                    <div class="col-md-5 mt-2">
+                        {% with field=form.descripcion %}
+                            {% include 'form_field.html' %}
+                        {% endwith %}
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </form>
+    
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/form_script.js') }}"></script>
+<script src="{{ url_for('static', filename='js/geo_script.js') }}"></script>
+{% endblock %}
+{% endblock %}

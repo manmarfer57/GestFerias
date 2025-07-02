@@ -1,0 +1,15 @@
+<h4>Fiestas en las que está incluida esta parcela</h4>
+<div id="listaFiestasParcela" class="mt-1">
+    {% if parcela.fiestas %}
+        <ul class="list-group">
+            {% for fiesta in parcela.fiestas %}
+                <li class="list-group-item">
+                    <a href="{{ url_for('fiesta.fiesta_view', fiesta_id=fiesta.id) }}" class="fw-bold">{{ fiesta.nombre }}</a> 
+                    <span class="text-dark">({{ fiesta.fechaInicio.strftime('%d %b') }} - {{ fiesta.fechaFin.strftime('%d %b %Y') }})</span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-center mt-1">No hay fiestas asociadas a esta parcela.</p>
+    {% endif %}
+</div>

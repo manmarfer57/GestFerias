@@ -1,0 +1,9 @@
+{% if (current_user.feriante.tipo == parcela.tipo or current_user.feriante.tipo == "Multiservicios" or parcela.tipo=="Otros") and fiesta %}
+    {% if not solicitada %}
+        <form action="{{ url_for('parcela.parcela_view', parcela_id=parcela.id, idFiesta=fiesta.id) }}" method="POST">
+            <button type="submit" name="solicitar_parcela" value="1" class="btn btn-primary mt-1" style="margin-top: 10px;">Solicitar Parcela</button>
+        </form>
+    {% else %}
+        <p class="text-black font-weight-bold mt-1">Ya has solicitado esta parcela para esta fiesta. Su estado es <strong>{{ solicitud.estado }}</strong></p>
+    {% endif %}
+{% endif %}

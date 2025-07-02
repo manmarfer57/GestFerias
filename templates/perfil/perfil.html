@@ -1,0 +1,133 @@
+{% extends "base/base_template.html" %}
+
+{% block content %}
+<div class="container mt-1">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card bg-dark-alt text-white card-body">
+                {% if perfil.rol == 'ayuntamiento' %}
+                    {% include 'perfil/perfil_ayuntamiento.html' %}
+                    <div id="map-data"
+                    data-latitud="{{ perfil.ayuntamiento.latitud }}"
+                    data-longitud="{{ perfil.ayuntamiento.longitud }}">
+                    </div>
+                {% elif perfil.rol == 'feriante' %}
+                    {% include 'perfil/perfil_feriante.html' %}
+                {% elif perfil.rol == 'publicitado' %}
+                    {% include 'perfil/perfil_publicitado.html' %}
+                {% elif perfil.rol == 'admin' %}
+                    {% include 'perfil/perfil_admin.html' %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-dark-alt text-white card-body">
+                <h4>Información General</h4>
+                <p><strong>Email:</strong> {{ perfil.email }}</p>
+                <p><strong>Rol:</strong> {{ perfil.rol }}</p>
+            </div>
+            <div class="align-items-start">
+                <div class="d-flex gap-3 mt-1">
+                {% if current_user.is_authenticated and (current_user.id == perfil.id or current_user.rol == 'admin') %}
+                    <a href="{{ url_for('auth.signup_form', perfil_id=perfil.id) }}" class="btn btn-primary text-light">Editar Perfil</a>
+                    <form action="{{ url_for('perfil.usuario_delete', usuario_id=perfil.id) }}" method="POST">
+                        <button type="submit" class="btn btn-danger">Eliminar Perfil</button>
+                    </form><br>
+                    {% if current_user.rol == 'publicitado' %}
+                        <a href="{{ url_for('publicidad.publicidad_form') }}" class="btn btn-success text-light">Añadir Publicidad</a><br>
+                    {% endif %}
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {% if perfil.rol == 'ayuntamiento' %}
+                {% if current_user.is_authenticated and (perfil.ayuntamiento.usuario_id == current_user.id or current_user.es_admin()) %}
+                    <div class="card shadow-sm mt-2 ">
+                        <div class="card-body p-2"><div id="map" class="rounded"></div></div>
+                    </div>  
+                    <div id="map-data" data-latitud="{{ perfil.ayuntamiento.latitud }}" data-longitud="{{ perfil.ayuntamiento.longitud }}"></div>
+                {% endif %}
+            {% elif perfil.rol == 'feriante' and current_user.rol == 'feriante'%}
+                <h4 class="mt-1">Calendario de Fiestas Aceptadas y Pendientes</h4>
+                <div id="calendar"></div>
+            {% endif %}
+            {% if perfil.rol == 'admin' %}
+                {% if current_user.rol == 'admin' %}
+                    {% include 'perfil/admin_users.html' %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            {% if perfil.rol == "ayuntamiento" %}
+                {% if current_user.is_authenticated and (perfil.ayuntamiento.usuario_id == current_user.id or current_user.es_admin()) %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {% if current_user.rol == "ayuntamiento" %}
+                                <a href="{{ url_for('parcela.parcela_form', idAyun=perfil.ayuntamiento.usuario_id) }}" class="btn btn-success text-light">Crear Parcela</a><br><br>
+                            {% endif %} 
+                            <h5>Listado de Parcelas Totales</h5>
+                            <div id="listar" class="mt-1">
+                                {% if parcelas %}
+                                    <ul class="list-group">
+                                        {% for parcela in parcelas %}
+                                            <li class="list-group-item">
+                                                <a href="{{ url_for('parcela.parcela_view', parcela_id=parcela.id) }}">{{ parcela.nombre }}</a> - {{ parcela.tipo }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p class="text-center mt-1">No hay parcelas disponibles.</p>
+                                {% endif %}
+                            </div>                        
+                        </div>
+                        <div class="col-md-6">
+                            {% if current_user.rol == 'ayuntamiento' %}
+                                <a href="{{ url_for('fiesta.fiesta_form') }}" class="btn btn-success text-light">Añadir Fiesta</a><br><br>
+                            {% endif %}
+                            <h5>Listado de Fiestas Añadidas</h5>
+                            <div id="listar" class="mt-1">
+                                {% if fiestas %}
+                                    <ul class="list-group">
+                                        {% for fiesta in fiestas %}
+                                            <li class="list-group-item">
+                                                <a href="{{ url_for('fiesta.fiesta_view', fiesta_id=fiesta.id) }}" class="fw-bold">{{ fiesta.nombre }}</a> 
+                                                <span class="text-dark small">({{ fiesta.fechaInicio.strftime('%d %b') }} - {{ fiesta.fechaFin.strftime('%d %b %Y') }})</span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p class="text-center mt-1">No hay fiestas disponibles.</p>
+                                {% endif %}
+                            </div>                        
+                        </div>
+                    </div>
+                {% endif %}
+            {% elif current_user.rol == 'feriante' and perfil.rol == 'feriante' %}
+                {% include 'perfil/solicitudes_parcelas.html' %}
+            {% endif %}
+            {% if perfil.rol == 'admin' and current_user.rol == 'admin'%}
+                {% include 'perfil/admin_publicidades.html' %}
+            {% endif %}
+            
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+{% if perfil.ayuntamiento %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script type="application/json" id="parcelas-data">{{ parcelas | tojson | safe }}</script>
+    <script type="module" src="{{ url_for('static', filename='js/map_scriptp.js') }}"></script>
+{% endif %}
+
+{% if perfil.feriante %}
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <script type="application/json" id="eventos-fiestas-data">{{ eventos_fiestas | tojson | safe }}</script>
+    <script src="{{ url_for('static', filename='js/calendar_script.js') }}"></script>
+{% endif %}
+{% endblock %}
+{% endblock %}
